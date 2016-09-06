@@ -77,14 +77,14 @@ class PlaybookCLI(CLI):
 
         self.options, self.args = parser.parse_args(self.args[1:])
 
-
         self.parser = parser
 
         if len(self.args) == 0:
             raise AnsibleOptionsError("You must specify a playbook file to run")
 
-        display.verbosity = self.options.verbosity
         self.validate_conflicts(runas_opts=True, vault_opts=True, fork_opts=True)
+
+        return super(PlaybookCLI, self).parse()
 
     def run(self):
 

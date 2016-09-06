@@ -98,10 +98,9 @@ class ConsoleCLI(CLI, cmd.Cmd):
         self.parser.set_defaults(cwd='*')
         self.options, self.args = self.parser.parse_args(self.args[1:])
 
-        display.verbosity = self.options.verbosity
         self.validate_conflicts(runas_opts=True, vault_opts=True, fork_opts=True)
 
-        return True
+        return super(GalaxyCLI, self).parse()
 
     def get_names(self):
         return dir(self)

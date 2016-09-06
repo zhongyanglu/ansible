@@ -121,8 +121,9 @@ class PullCLI(CLI):
         if self.options.module_name not in self.SUPPORTED_REPO_MODULES:
             raise AnsibleOptionsError("Unsuported repo module %s, choices are %s" % (self.options.module_name, ','.join(self.SUPPORTED_REPO_MODULES)))
 
-        display.verbosity = self.options.verbosity
         self.validate_conflicts(vault_opts=True)
+
+        return super(GalaxyCLI, self).parse()
 
     def run(self):
         ''' use Runner lib to do SSH things '''

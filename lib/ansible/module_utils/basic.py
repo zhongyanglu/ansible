@@ -639,7 +639,7 @@ class AnsibleModule(object):
         self.check_mode = False
         self.no_log = no_log
         self.cleanup_files = []
-        self._debug = False
+        self._debug = 0
         self._diff = False
         self._verbosity = 0
         # May be used to set modifications to the environment for any
@@ -1271,7 +1271,10 @@ class AnsibleModule(object):
                 self.no_log = self.boolean(v)
 
             elif k == '_ansible_debug':
-                self._debug = self.boolean(v)
+                try:
+                    self._debug = int(v)
+                except ValueError:
+                    self._debug = 0
 
             elif k == '_ansible_diff':
                 self._diff = self.boolean(v)
@@ -1615,8 +1618,8 @@ class AnsibleModule(object):
             syslog.openlog(str(module), 0, facility)
             syslog.syslog(syslog.LOG_INFO, msg)
 
-    def debug(self, msg):
-        if self._debug:
+    def debug(self, msg, caplevel=0):
+        if self._debug > caplevel:
             self.log(msg)
 
     def log(self, msg, log_args=None):

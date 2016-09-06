@@ -192,6 +192,7 @@ class PlayContext(Base):
 
     # general flags
     _verbosity        = FieldAttribute(isa='int', default=0)
+    _debug_verbosity  = FieldAttribute(isa='int', default=0)
     _only_tags        = FieldAttribute(isa='set', default=set())
     _skip_tags        = FieldAttribute(isa='set', default=set())
     _check_mode       = FieldAttribute(isa='bool', default=False)
@@ -273,7 +274,7 @@ class PlayContext(Base):
             setattr(self, flag, getattr(options,flag, ''))
 
         # general flags (should we move out?)
-        for flag in ['connection','remote_user', 'private_key_file', 'verbosity', 'force_handlers', 'step', 'start_at_task', 'diff']:
+        for flag in ['connection','remote_user', 'private_key_file', 'verbosity', 'debug_verbosity', 'force_handlers', 'step', 'start_at_task', 'diff']:
             attribute = getattr(options, flag, False)
             if attribute:
                 setattr(self, flag, attribute)

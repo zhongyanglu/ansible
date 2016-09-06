@@ -71,7 +71,6 @@ class VaultCLI(CLI):
             self.parser.set_usage("usage: %prog rekey [options] file_name")
 
         self.options, self.args = self.parser.parse_args(self.args[1:])
-        display.verbosity = self.options.verbosity
 
         can_output = ['encrypt', 'decrypt']
 
@@ -88,6 +87,8 @@ class VaultCLI(CLI):
             # a workaround.
             if self.options.output_file and len(self.args) > 1:
                 raise AnsibleOptionsError("At most one input file may be used with the --output option")
+
+        return super(GalaxyCLI, self).parse()
 
     def run(self):
 

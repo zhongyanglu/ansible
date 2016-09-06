@@ -103,7 +103,15 @@ class CLI(object):
         fn()
 
     def parse(self):
-        raise Exception("Need to implement!")
+        if self.options:
+            display.verbosity = self.options.verbosity
+            try:
+                debug_verbosity = int(self.options.debug_verbosity)
+            except ValueError:
+                debug_verbosity = 0
+            display.debug_verbosity = debug_verbosity
+
+        return True
 
     def run(self):
 
@@ -238,6 +246,8 @@ class CLI(object):
         parser = SortedOptParser(usage, version=CLI.version("%prog"))
         parser.add_option('-v','--verbose', dest='verbosity', default=0, action="count",
             help="verbose mode (-vvv for more, -vvvv to enable connection debugging)")
+        parser.add_option('-d','--debug', dest='debug_verbosity', default=C.DEFAULT_DEBUG, action="count",
+            help="debugging mode (multiple uses increase debugging verbosity)")
 
         if inventory_opts:
             parser.add_option('-i', '--inventory-file', dest='inventory',

@@ -79,10 +79,9 @@ class AdHocCLI(CLI):
         elif len(self.args) > 1:
             raise AnsibleOptionsError("Extranous options or arguments")
 
-        display.verbosity = self.options.verbosity
         self.validate_conflicts(runas_opts=True, vault_opts=True, fork_opts=True)
 
-        return True
+        return super(GalaxyCLI, self).parse()
 
     def _play_ds(self, pattern, async, poll):
         check_raw = self.options.module_name in ('command', 'shell', 'script', 'raw')

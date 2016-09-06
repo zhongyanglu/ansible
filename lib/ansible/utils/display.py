@@ -38,14 +38,6 @@ from ansible.utils.color import stringc
 from ansible.utils.unicode import to_bytes, to_unicode
 
 try:
-    from __main__ import debug_lock
-except ImportError:
-    # for those not using a CLI, though ...
-    # this might not work well after fork
-    from multiprocessing import Lock
-    debug_lock = Lock()
-
-try:
     # Python 2
     input = raw_input
 except NameError:
@@ -69,10 +61,11 @@ if C.DEFAULT_LOG_PATH:
 
 class Display:
 
-    def __init__(self, verbosity=0):
+    def __init__(self, verbosity=0, debug_verbosity=0):
 
         self.columns = None
         self.verbosity = verbosity
+        self.debug_verbosity = debug_verbosity
 
         # list of all deprecation messages to prevent duplicate display
         self._deprecations = {}
@@ -182,12 +175,6 @@ class Display:
     def vvvvvv(self, msg, host=None):
         return self.verbose(msg, host=host, caplevel=5)
 
-    def debug(self, msg):
-        if C.DEFAULT_DEBUG:
-            debug_lock.acquire()
-            self.display("%6d %0.5f: %s" % (os.getpid(), time.time(), msg), color=C.COLOR_DEBUG)
-            debug_lock.release()
-
     def verbose(self, msg, host=None, caplevel=2):
         # FIXME: this needs to be implemented
         #msg = utils.sanitize_output(msg)
@@ -196,6 +183,25 @@ class Display:
                 self.display(msg, color=C.COLOR_VERBOSE)
             else:
                 self.display("<%s> %s" % (host, msg), color=C.COLOR_VERBOSE, screen_only=True)
+
+    def debug(self, msg, caplevel=0):
+        if self.debug_verbosity > caplevel:
+            self.display("%6d %0.5f: %s" % (os.getpid(), time.time(), msg), color=C.COLOR_DEBUG)
+
+    def d(self, msg):
+        self.debug(msg, caplevel=1)
+
+    def dd(self, msg):
+        self.debug(msg, caplevel=2)
+
+    def ddd(self, msg):
+        self.debug(msg, caplevel=3)
+
+    def dddd(self, msg):
+        self.debug(msg, caplevel=4)
+
+    def ddddd(self, msg):
+        self.debug(msg, caplevel=5)
 
     def deprecated(self, msg, version=None, removed=False):
         ''' used to print out a deprecation message.'''
