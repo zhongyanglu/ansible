@@ -170,17 +170,6 @@ class InventoryParser(object):
             else:
                 self._raise_error("Entered unhandled state: %s" % (state))
 
-        # Any entries in pending_declarations not removed by a group declaration
-        # above mean that there was an unresolved forward reference. We report
-        # only the first such error here.
-
-        for g in pending_declarations:
-            decl = pending_declarations[g]
-            if decl['state'] == 'vars':
-                raise AnsibleError("%s:%d: Section [%s:vars] not valid for undefined group: %s" % (self.filename, decl['line'], decl['name'], decl['name']))
-            elif decl['state'] == 'children':
-                raise AnsibleError("%s:%d: Section [%s:children] includes undefined group: %s" % (self.filename, decl['line'], decl['parent'], decl['name']))
-
         # Finally, add all top-level groups as children of 'all'.
         # We exclude ungrouped here because it was already added as a child of
         # 'all' at the time it was created.
