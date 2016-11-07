@@ -111,7 +111,7 @@ class BaseMeta(type):
                     method = "_get_attr_%s" % attr_name
                     if method in src_dict or method in dst_dict:
                         getter = partial(_generic_g_method, attr_name)
-                    elif '_get_parent_attribute' in dst_dict and value.inherit:
+                    elif '_get_parent_attribute' in dst_dict and value.inherit or value.force_parent:
                         getter = partial(_generic_g_parent, attr_name)
                     else:
                         getter = partial(_generic_g, attr_name)
@@ -148,20 +148,20 @@ class BaseMeta(type):
 class Base(with_metaclass(BaseMeta, object)):
 
     # connection/transport
-    _connection          = FieldAttribute(isa='string')
-    _port                = FieldAttribute(isa='int')
-    _remote_user         = FieldAttribute(isa='string')
+    _connection          = FieldAttribute(isa='string', force_parent=True)
+    _port                = FieldAttribute(isa='int', force_parent=True)
+    _remote_user         = FieldAttribute(isa='string', force_parent=True)
 
     # variables
     _vars                = FieldAttribute(isa='dict', priority=100, inherit=False)
 
     # flags and misc. settings
-    _environment         = FieldAttribute(isa='list')
-    _no_log              = FieldAttribute(isa='bool')
-    _always_run          = FieldAttribute(isa='bool')
-    _run_once            = FieldAttribute(isa='bool')
-    _ignore_errors       = FieldAttribute(isa='bool')
-    _check_mode          = FieldAttribute(isa='bool')
+    _environment         = FieldAttribute(isa='list', force_parent=True)
+    _no_log              = FieldAttribute(isa='bool', force_parent=True)
+    _always_run          = FieldAttribute(isa='bool', force_parent=True)
+    _run_once            = FieldAttribute(isa='bool', force_parent=True)
+    _ignore_errors       = FieldAttribute(isa='bool', force_parent=True)
+    _check_mode          = FieldAttribute(isa='bool', force_parent=True)
 
     # param names which have been deprecated/removed
     DEPRECATED_ATTRIBUTES = [
@@ -535,3 +535,4 @@ class Base(with_metaclass(BaseMeta, object)):
         setattr(self, '_uuid', data.get('uuid'))
         self._finalized = data.get('finalized', False)
         self._squashed = data.get('squashed', False)
+
