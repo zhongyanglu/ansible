@@ -2,7 +2,7 @@ Ansible Documentation
 =====================
 
 About Ansible
-`````````````
+``````````````
 
 Welcome to the Ansible documentation!
 
